@@ -19,58 +19,6 @@ st.subheader("*Two matching settings:*")
 st.session_state["opened_ha"] = False 
 st.session_state["opened_ha"] = False
 
-doc = "👨‍⚕️"
-b = "👶️"
-f = "👩🏻"
-d ="🐶️"
-
-bib ="🍼️"
-os="🦴️"
-ste = "🩺️"
-ca = "🎧️"
-
-def pref_rom():
-    # <!-- Position 1: Top (0°) -->
-    one = "👨‍🔬"
-
-    # <!-- Position 2: Top-right (45°) -->
-    two = "🧑🏻"
-
-    # <!-- Position 3: Right (90°) -->
-    tre = "👶"
-
-    # <!-- Position 4: Bottom-right (135°) -->
-    fore = "👩‍🦱"
-
-    # <!-- Position 5: Bottom (180°) -->
-    fiv = "👨"
-
-    # <!-- Position 6: Bottom-left (225°) -->
-    si = "🧑🏽‍🦱"
-
-    # <!-- Position 7: Left (270°) -->
-    se = "👩🏻"
-
-    # <!-- Position 8: Top-left (315°) -->
-    ei = "👨‍💼"
-    from random import shuffle 
-    li = [one,two,tre,fore,fiv,si,se,ei]
-    for agent in li:
-        lip = li[:]
-        lip.remove(agent)
-        shuffle(lip)
-        st.write(f"$ {agent}: "+  "\succ".join(lip) + "$")
-
-    st.write("Example Preferences")
-    st.html("<p style=\"font-size: 20px;\">👨‍⚕️: 🧑🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">🧑🏻: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">👶: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">👩‍🦱: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">👨: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">🧑🏽‍🦱: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">👩🏻: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.html("<p style=\"font-size: 20px;\">👨‍💼: 👩🏻≻👩‍🦱≻👶≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️≻👨‍⚕️</p>" )
-    st.markdown(f"$ {one} ≻: \quad {two} \succ {fiv} \succ {se} \succ {fore} \succ {tre} \succ {ei} \succ {si}$")
 
 settings = st.columns(2)
 with settings[0]:
@@ -79,7 +27,7 @@ with settings[0]:
     st.write("The goal is to form pairs of agents according to the agents' ordinal preferences over the other agents.")
     #st.image("assets/srp_ok.png")
     st.image("assets/rm.png")
-    # pref_rom()
+
 
 with settings[1]:
     st.subheader("House Allocation")
