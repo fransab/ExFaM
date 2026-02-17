@@ -149,6 +149,7 @@ footer = f"""
             | <a href="https://www.centralesupelec.fr" target="_blank"><img src="data:image/png;base64,{logocs}"></a>
             | <a href="https://anaellewilczynski.pages.centralesupelec.fr/anr-apple-pie/" target="_blank"><img src="data:image/png;base64,{logoapp}"></a>
             | <span>Developed by Francesco Sabatino, supervised by Wassila Ouerdane and Anaëlle Wilczynski</span>
+            | 2026
         </div>
         <!--
         <div class="footer-right">
