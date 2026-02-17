@@ -1,11 +1,11 @@
 import streamlit as st
 import base64
 st.set_page_config(
-    page_title="XAI Matchings",
+    page_title="ExFaMa",
     page_icon=":material/accessibility:",
 )
 
-st.title("ExFaM: Explaining Fair Matchings")
+st.title("ExFaMa: Explaining Fair Matchings")
 
 st.session_state["opened_ha"] = False 
 st.session_state["opened_ha"] = False
@@ -77,14 +77,15 @@ with settings[0]:
     st.subheader("Roommate Matching")
     #st.write("Agents are matched with each other in pairs, and have preferences on which other agents they would like to be matched with.")
     st.write("The goal is to form pairs of agents according to the agents' ordinal preferences over the other agents.")
-    st.image("assets/srp_ok.png")
+    #st.image("assets/srp_ok.png")
+    st.image("assets/rm.png")
     # pref_rom()
 
 with settings[1]:
     st.subheader("House Allocation")
     #st.write("Agents are assigned objects, and have a preference for every object. We only consider the setting where there are as many objects as there are agents.")
     st.write("The goal is to assign one item to each agent according to the agents' ordinal preferences over the items.")
-    st.image("assets/ha.png")
+    st.image("assets/housealloc.png")
 
 for _ in range(4):
     st.write("\n")

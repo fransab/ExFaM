@@ -4,6 +4,8 @@ Created on Thu Mar  7 15:28:54 2024
 
 @author: sabatinofr
 """
+import numpy as np 
+
 from .roommate import rank
 
 from .tools import cnf3_vars

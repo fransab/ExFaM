@@ -84,6 +84,7 @@ def local_graph(agents, demo=False):
                 with st.container(border=False, horizontal_alignment="left"):
                     choices = st.multiselect("select", 
                                 label_visibility="hidden",
+                                placeholder="Select visible agents",
                                 default = list(G[agent]) if agent in G else None,
                                 disabled=demo,
                                 options=[agent2 for agent2 in agents if agent2 != agent],
