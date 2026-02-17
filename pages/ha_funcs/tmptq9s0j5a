@@ -1,0 +1,252 @@
+import networkx as nx 
+from pysat.solvers import Glucose3
+from pysat.formula import CNF
+from pysat.examples.musx import MUSX
+from pysat.examples.optux import OptUx
+from random import shuffle
+
+def retrieve_mus(obj, fast = True, shuff=True):
+    """ 
+    Retrieve a set of clauses that is a MUS 
+    """
+    if type(obj) == list:
+        clauses = obj
+    else:
+        clauses = obj.cnf
+        
+    if shuff: 
+        shuffle(clauses)
+    cnf = CNF(from_clauses=clauses)
+    # g = Glucose3()
+    # for clause in cnfx:
+    #     g.add_clause(clause)
+    # solved = g.solve()
+    
+    # if solved:
+    #     return -1
+
+    mus = None
+
+    if fast:
+        musx = MUSX(cnf.weighted(), verbosity=0)
+        mus = musx.compute()
+    else:
+        with OptUx(cnf.weighted()) as optux:
+            for mus in optux.enumerate():
+                mus = mus
+                break
+        
+    mus = [clauses[i-1] for i in mus] # Retrieve actual clauses instead of indices
+
+    return mus
+
+def make_vars(agents,objects):
+    x = {}
+    i = 1 
+    for agent in agents:
+        for obj in objects:
+            x[agent,obj] = i 
+            i += 1 
+    return x 
+def get_var(x, var):
+    return next(k for k, v in x.items() if v == var)
+    
+
+def get_matching(F,model):
+    x = F.x 
+    matching = {}
+    for var in model:
+        if var > 0:
+            i,o = next((k for k, v in x.items() if v == var), None)
+            matching[i] = o 
+    return matching
+
+def get_all_matchings(F):
+    solutions = []
+
+    with Glucose3(bootstrap_with=F.cnf) as g:
+        while g.solve():
+            model = g.get_model()
+            solutions.append(get_matching(F, model))
+    
+            # block the current model
+            blocking_clause = [-lit for lit in model]
+            g.add_clause(blocking_clause)
+    return solutions
+
+def rank(P, i, o):
+    """ 
+    Rank of object o for agent i in preference list P (starting at 1)
+    """
+    
+    return P[i].index(o) + 1
+
+def prefers(P,i,o1,o2):
+    """ 
+    return True if agent o1 >_i o2
+    """
+    assert o1 != o2
+    return rank(P, i, o1) < rank(P, i, o2) 
+
+class FormulaHA:
+    def __init__(self, agents, objects,P, g, f):
+        self.agents = agents 
+        self.n = len(agents)
+        self.p  = P
+        self.f = f 
+        self.objects = objects 
+        self.m = len(objects)
+        self.x = make_vars(agents, objects)
+        self.cnf = []
+        self.e = {}
+        self.g = g
+        if self.f == "lef":
+            make_atleast(self); make_lef(self)
+        elif self.f == "ref":
+            make_atleast(self); make_ref(self)
+        else:
+            raise ValueError("Unknown")
+        self.cnf = [sorted(eval(el)) for el in self.e.keys()]
+    
+    def add_pref(self,i,o):
+        make_pref(self,i,o)
+
+def make_atleast(F):
+    agents = F.agents 
+    objects = F.objects
+    x = F.x
+    for i in F.agents:
+        clause = [x[i,o] for o in objects]
+        F.e[str(sorted(clause))] = [f"ALLOC[{i}]"]
+        
+        for o in objects:
+            for j in agents:
+                if j <= i: continue 
+                clause = [-x[i,o] , -x[j,o]]
+                F.e[str(sorted(clause))] = [f"ALLOC[{o}_{i}_{j}]"]
+                
+def make_lef(F):
+    agents = F.agents
+    objects = F.objects 
+    x = F.x 
+    e = F.e 
+    g = F.g
+    P = F.p
+    for i in agents:
+        for j in g[i]:
+            for o in objects:
+                clause = [x[j,op] for op in objects if op != o and prefers(P, j, op, o) ] # and prefers(P, i, o, op)
+                clause = [-x[i,o]] + clause 
+                F.e[str(sorted(clause))] = [f"LEF[{i}_{j}_{o}]"]
+
+def make_ref(F):
+    agents = F.agents
+    objects = F.objects 
+    x = F.x 
+    e = F.e 
+    P = F.p
+    for i in agents:
+        for j in agents:
+            if j == i : continue 
+            for o in objects:
+                if not rank(P,i,o) > rank(P,j,o):
+                    continue
+                clause = [x[j,op] for op in objects if op!=o and prefers(P, j,  op, o)]
+                clause  = [-x[i,o]] + clause
+                F.e[str(sorted(clause))] = [f"REF[{i}_{j}_{o}]"]
+
+def make_pref(F,i,o):
+    agents = F.agents
+    objects = F.objects 
+    x = F.x 
+    e = F.e 
+    P = F.p
+    clause = [x[i,k] for k in objects if k!= o and prefers(P,i,k,o)] 
+    print("added clause",clause)
+    F.e[str(sorted(clause))] = [f"PREF[{i}]"]
+    F.cnf = [sorted(eval(el)) for el in F.e.keys()]
+
+                
+def solve(obj):
+    """ 
+    Return the solver object that solves the given CNF 
+    """
+    if type(obj) == FormulaHA:
+        cnf = obj.cnf 
+    else:
+        cnf = obj
+    g = Glucose3() 
+    for el in cnf:
+        g.add_clause(el)
+    g.solve()
+    return g
+
+def is_lef(p, o, g):
+    for agent in o:
+        oa = o[agent]
+        for n in g[agent]:
+            on = o[n]
+            if rank(p, agent, oa) > rank(p, agent, on):
+                return False 
+    return True 
+def is_ref(o,P):
+    for a in o:
+        for b in o:
+            if a == b: continue
+            oa,ob = o[a] , o[b]
+
+            if prefers(P,a,ob,oa) and rank(P,a,ob) < rank(P,b,ob):
+                print(f"Agent {a} prefers {ob} to {oa} and ranks {ob} better than agent {b} does")
+                return False 
+    return True 
+
+
+def exists_unique_eff_matching(F):
+    """ 
+    Checks if there is a unique matching that minimizes the worst rank for the agents
+    Used to discriminate when there are multiple fair matchings
+    """
+    g = solve(F)
+    assert g.status
+    ms = get_all_matchings(F)
+    if len(ms) == 1:
+        return ms[0]
+    
+    for agent in agents:
+        worstrank = {}
+        for matching in ms:
+            worst = max([rank(p,agent,matching[agent]) for agent in agents])
+            if worst in worstrank:
+                worstrank[worst].append(matching)
+            else:
+                worstrank[worst] = [matching]
+
+        mini = min(worstrank)
+
+        if len(worstrank[mini]) == 1:
+            return worstrank[mini][0]
+    
+    return False 
+    
+from copy import deepcopy as copy
+import networkx as nx
+from tqdm import tqdm
+if __name__=="__main__":        
+    n = 4
+    agents = [i for i in range(n)]
+    objects = ["o_"+str(i) for i in range(n)]
+    for _ in tqdm(range(5000)):
+        p =  []
+        for _ in range(n):
+            shuffle(objects)
+            p.append(  copy(objects))
+
+        F= FormulaHA(agents, objects, p, g=None,"ref")
+        
+        g = solve(F)
+        
+        if g.status:
+            m = get_matching(F, g.get_model())
+            break
+
+            
