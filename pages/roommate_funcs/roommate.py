@@ -3,7 +3,7 @@ from random import shuffle, choice, random
 from copy import copy
 from itertools import permutations
 from math import factorial
-import pickle
+
 
 
 def generate_preferences(n):

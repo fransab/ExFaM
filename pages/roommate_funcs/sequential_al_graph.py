@@ -6,7 +6,6 @@ Created on Mon Jun 10 14:22:10 2024
 """
 from .explain_mus import text_expl 
 from .explain_mus import make_color
-from .heuristics import * 
 
 from time import sleep
 import networkx as nx 

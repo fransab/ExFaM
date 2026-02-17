@@ -1,4 +1,6 @@
 matplotlib==3.8.2
+networkx==3.4.2
 pysat==3.1.0
 python-sat==0.1.8.dev15
 streamlit==1.50.0
+tqdm>=4.60.1

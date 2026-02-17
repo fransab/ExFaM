@@ -2,9 +2,7 @@ import streamlit as st
 import re
 import itertools
 import time 
-import numpy as np 
 import random
-import pandas as pd 
 
 @st.fragment
 def roommate_xai_nodemo():

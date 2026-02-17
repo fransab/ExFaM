@@ -6,25 +6,20 @@ Created on Mon Jun  2 10:43:07 2025
 """
 from .sequential_al_graph import Seq
 from .roommate_sat import *
-from .implications import *
 from .explain_mus import *
-from .heuristics import *
 from .roommate import *
 from .tools import *
-from .funcs import *
 from .cnf import *
 
 import sys
-import numpy as np
 from tqdm import tqdm
-import multiprocessing
 from time import sleep 
 from copy import deepcopy
 from datetime import datetime 
 from time import perf_counter as clock
 from itertools import combinations, permutations
 from random import randint, choice, choices, sample,random, shuffle
-from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
+
 
 from pysat.formula import WCNF
 

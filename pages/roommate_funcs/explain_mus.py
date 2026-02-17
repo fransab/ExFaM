@@ -13,7 +13,7 @@ from pysat.examples.optux import OptUx
 
 from .roommate_sat import get_ij_from_k
 from .roommate_sat import sort_cnf
-from .tools import PICKLE_FOLDER
+
 
 import matplotlib.pyplot as plt
 from time import sleep
