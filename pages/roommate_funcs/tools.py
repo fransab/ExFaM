@@ -100,16 +100,6 @@ def load_random(**kwargs):
 
 
 
-if os.getlogin() == "franc":
-    DOWNLOAD_FOLDER = "C:\\Users\\franc\\Downloads\\"
-    PICKLE_FOLDER =   "C:\\Users\\franc\\Documents\\Python\\PickleStore\\"
-elif os.getlogin() == "sabatinofr":
-    DOWNLOAD_FOLDER = "C:\\Users\\sabatinofr\\Downloads\\"
-    PICKLE_FOLDER =   "C:\\Users\\sabatinofr\\Documents\\Python\\PickleStore\\"
-else:
-    PICKLE_FOLDER =   "PickleStore\\"
-
-
 
 def read_dimacs(filename):
     """ 
