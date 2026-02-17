@@ -4,13 +4,6 @@ Created on Mon Mar  4 12:16:55 2024
 
 @author: sabatinofr
 """
-
-from pysat.solvers import Glucose3
-
-from pysat.formula import CNF 
-
-from pysat.examples.optux import OptUx 
-
 from .roommate_sat import get_ij_from_k
 from .roommate_sat import sort_cnf
 from .tools import PICKLE_FOLDER
